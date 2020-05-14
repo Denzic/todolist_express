@@ -1,0 +1,24 @@
+<%- include("header.ejs") -%>
+  <body>
+    <div class="box" id="heading">
+      <h1><%= listTitle %></h1>
+    </div>
+
+    <div class="box">
+      <!-- Dynamic dispay list items -->
+      <%for(var i = 0; i<items.length; i++){%>
+        <div class="item">
+          <input type="checkbox">
+          <p><%=items[i]%></p>
+        </div>
+      <%}%>
+      <!-- Submit new item & use button value to run logic at backend -->
+      <form class="item" action="/" method="POST">
+        <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
+        <button type="submit" name="list" value=<%= listTitle%>>+</button>
+      </form>
+    </div>
+
+  </body>
+  <%- include("footer.ejs") -%>
+

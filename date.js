@@ -1,5 +1,5 @@
 // Export functions
-exports.getDate = function () {
+exports.getDate = () => {
   const today = new Date()
   const options = {
     weekday: "long",
@@ -9,7 +9,7 @@ exports.getDate = function () {
   return day = today.toLocaleDateString("en-AU", options)
 }
 
-exports.getDay = function () {
+exports.getDay = () => {
   const today = new Date()
   const options = {
     weekday: "long"

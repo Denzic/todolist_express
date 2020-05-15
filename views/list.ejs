@@ -1,24 +1,32 @@
 <%- include("header.ejs") -%>
-  <body>
-    <div class="box" id="heading">
-      <h1><%= listTitle %></h1>
-    </div>
+<body>
+  <div class="box" id="heading">
+    <h1><%= listTitle %></h1>
+  </div>
 
-    <div class="box">
-      <!-- Dynamic dispay list items -->
-      <%for(var i = 0; i<items.length; i++){%>
-        <div class="item">
-          <input type="checkbox">
-          <p><%=items[i]%></p>
-        </div>
-      <%}%>
-      <!-- Submit new item & use button value to run logic at backend -->
-      <form class="item" action="/" method="POST">
-        <input type="text" name="newItem" placeholder="New Item" autocomplete="off"/>
-        <button type="submit" name="list" value=<%= listTitle%>>+</button>
-      </form>
-    </div>
+  <div class="box">
+    <!-- Dynamic dispay list items -->
+    <% items.forEach( item =>{ %>
+    <form action="/delete" method="POST">
+      
+      <div class="item">
+        <input type="checkbox" name="itemId" value="<%= item.id %>" onclick="this.form.submit()" />
+        <p><%=item.name%></p>
+      </div>
+      <input type="hidden" name="listTitle" value="<%= listTitle %>"></input>
+    </form>
+    <% }) %>
 
-  </body>
-  <%- include("footer.ejs") -%>
-
+    <!-- Submit new item & use button value to run logic at backend -->
+    <form class="item" action="/" method="POST">
+      <input
+        type="text"
+        name="newItem"
+        placeholder="New Item"
+        autocomplete="off"
+      />
+      <button type="submit" name="list" value="<%= listTitle %>">+</button>
+    </form>
+  </div>
+</body>
+<%- include("footer.ejs") -%>

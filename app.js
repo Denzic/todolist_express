@@ -14,14 +14,19 @@ app.use(
 )
 app.use(express.static("public"))
 
-mongoose.connect(
-  "mongodb+srv://admin-Denzic:op930917@cluster0-fkb6v.mongodb.net/todolistDB",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-  }
-)
+// mongoose.connect(
+//   "mongodb+srv://admin-Denzic:op930917@cluster0-fkb6v.mongodb.net/todolistDB",
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//     useFindAndModify: false
+//   }
+// )
+mongoose.connect("mongodb://localhost:27017/todolistDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false
+})
 
 // Create Item model
 const itemShema = {
@@ -45,42 +50,28 @@ const List = mongoose.model("List", { name: String, items: [itemShema] })
 
 // Home route
 app.get("/", (req, res) => {
-  Item.find((err, foundItems) => {
-    if (foundItems.length !== 0) {
-      res.render("list", {
-        listTitle: "Today",
-        items: foundItems
-      })
-    } else {
-      Item.insertMany(defaultItems, err => {})
-      res.redirect("/")
-    }
-  })
+  res.redirect("/Today")
 })
 
 // Home post route
 app.post("/", (req, res) => {
   const { newItem, list } = req.body
-  // Have a new Item array
+  // Create a new item
   const item = new Item({
     name: newItem
   })
-  if (list === "Today") {
-    item.save()
-    res.redirect("/")
-  } else {
-    List.findOne({ name: list }, (err, foundList) => {
-      foundList.items.push(item)
-      foundList.save()
-      res.redirect("/" + list)
-    })
-  }
+  // Find the correct list and push the item
+  List.findOne({ name: list }, (err, foundList) => {
+    foundList.items.push(item)
+    foundList.save()
+    res.redirect("/" + list)
+  })
 })
 
 // Render custom route
 app.get("/:routeParam", (req, res) => {
   const routeParam = _.capitalize(req.params.routeParam)
-
+  // Find the correct list
   List.findOne({ name: routeParam }, (err, foundList) => {
     if (!err) {
       if (!foundList) {
@@ -100,19 +91,14 @@ app.get("/:routeParam", (req, res) => {
 // Delete
 app.post("/delete", (req, res) => {
   const { itemId, listTitle } = req.body
-  if (listTitle === "Today") {
-    Item.findByIdAndRemove(itemId, err => {})
-    res.redirect("/")
-  } else {
-    // prettier-ignore
-    List.findOneAndUpdate({name: listTitle}, {$pull:{items:{_id: itemId}}}, (err)=>{
+  // prettier-ignore
+  List.findOneAndUpdate({name: listTitle}, {$pull:{items:{_id: itemId}}}, (err)=>{
       if (err) {
         console.log(err)
       }else{
         res.redirect("/" + listTitle)
       }
     })
-  }
 })
 
 // About route

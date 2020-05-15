@@ -8,7 +8,6 @@
     <!-- Dynamic dispay list items -->
     <% items.forEach( item =>{ %>
     <form action="/delete" method="POST">
-      
       <div class="item">
         <input type="checkbox" name="itemId" value="<%= item.id %>" onclick="this.form.submit()" />
         <p><%=item.name%></p>
